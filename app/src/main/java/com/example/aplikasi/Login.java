@@ -1,6 +1,7 @@
 package com.example.aplikasi;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import android.widget.Button;
@@ -23,6 +24,7 @@ public class Login extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
+
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
