@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
@@ -51,8 +53,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         holder.tvname.setText(contact.getTeamname());
         holder.tvphone.setText(contact.getDate());
         holder.tvgenre.setText(contact.getStadiun());
-//        Glide.with(holder.itemView.getContext()).load(contact.getStrTeamBadge()).into(holder.imgimage);
-
+        Glide.with(holder.itemView.getContext()).load(contact.getStrTeamBadge()).into(holder.imgimage);
     }
 
     @Override
