@@ -1,6 +1,8 @@
 package com.example.aplikasi;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.GnssAntennaInfo;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -56,7 +58,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.menu_delete:
-                                    deleteItem(getAdapterPosition());
+                                    int position = getAdapterPosition();
+                                    if (position != RecyclerView.NO_POSITION) {
+                                        showConfirmationDialog(v.getContext(), position);
+                                    }
                                     return true;
                                 default:
                                     return false;
@@ -68,9 +73,28 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
                 }
             });
         }
-
-
     }
+    private void showConfirmationDialog(Context context, final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Konfirmasi");
+        builder.setMessage("Apakah kamu yakin ingin menghapus item ini?");
+        builder.setPositiveButton("Iya", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteItem(position);
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
 
     public Adapter(Context context, List<EPLTeamModel> contactList, ContactsAdapterListener listener) {
@@ -102,9 +126,9 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         return this.contactList.size();
     }
 
-    private void deleteItem(int position){
+    private void deleteItem(int position) {
         contactList.remove(position);
-                notifyItemRemoved(position);
+        notifyItemRemoved(position);
     }
 
     public interface ContactsAdapterListener {
