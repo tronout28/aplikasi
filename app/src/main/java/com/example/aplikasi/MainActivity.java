@@ -16,6 +16,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,10 +24,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-    RecyclerView rvKontakName;
+public class MainActivity extends AppCompatActivity implements Adapter.ContactsAdapterListener{
+    RecyclerView rvClubName;
     ArrayList<EPLTeamModel> listDataEPLTeams;
-    private Adapter Adapter;
+    private Adapter adapter;
 
     public void getEPLOnline() {
         String url = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=English%20Premier%20League";
@@ -46,15 +47,16 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject jsonTeam = jsonArrayEPLTeam.getJSONObject(i);
                                 myTeam.setTeamname(jsonTeam.getString("strTeam"));
                                 myTeam.setStadiun(jsonTeam.getString("strStadium"));
+                                myTeam.setTeamdescription(jsonTeam.getString("strDescriptionEN"));
                                 myTeam.setStrTeamBadge(jsonTeam.getString("strTeamBadge"));
                                 listDataEPLTeams.add(myTeam);
                             }
-                            rvKontakName = findViewById(R.id.recyclerView);
-                            Adapter = new Adapter(getApplicationContext(), listDataEPLTeams,MainActivity.this);
+                            rvClubName  = findViewById(R.id.recyclerView);
+                            adapter = new Adapter(getApplicationContext(), listDataEPLTeams,MainActivity.this);
                             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                            rvKontakName.setHasFixedSize(true);
-                            rvKontakName.setLayoutManager(mLayoutManager);
-                            rvKontakName.setAdapter(Adapter);
+                            rvClubName.setHasFixedSize(true);
+                            rvClubName.setLayoutManager(mLayoutManager);
+                            rvClubName.setAdapter(adapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -84,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 break;
             default:
-                return super.onOptionsItemSelected(item);
         }
         return true;
     }
@@ -96,6 +97,13 @@ public class MainActivity extends AppCompatActivity {
         listDataEPLTeams = new ArrayList<>();
 
         getEPLOnline();
-
     }
+    @Override
+    public void onContactSelected(EPLTeamModel myteam) {
+        // move to another page
+        Intent intent = new Intent(this, DetailTeam.class);
+        intent.putExtra("myTeam", myteam);
+        startActivity(intent);
+    }
+
 }
