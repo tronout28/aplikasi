@@ -3,8 +3,6 @@ package com.example.aplikasi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.GnssAntennaInfo;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,19 +23,22 @@ import java.util.List;
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     private Context context;
-    private List<EPLTeamModel> contactList;
+    private List<FoodModel> contactList;
     private ContactsAdapterListener listener;
 
     public class MyViewHolder extends RecyclerView.ViewHolder  {
-        public TextView tvClubname, tvStadiun;
+        public TextView tvfoodname, tvfoodfrom;
         public ImageView imgimage;
         public CardView cardView;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
-            tvClubname = view.findViewById(R.id.tvclubname);
-            tvStadiun = view.findViewById(R.id.tvstadium);
+            tvfoodname = view.findViewById(R.id.tvfoodname);
+
+            tvfoodfrom = view.findViewById(R.id.tvfrom);
+
             imgimage = view.findViewById(R.id.imgImage);
+
             cardView = view.findViewById(R.id.cardView);
 
             view.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +98,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
 
 
-    public Adapter(Context context, List<EPLTeamModel> contactList, ContactsAdapterListener listener) {
+    public Adapter(Context context, List<FoodModel> contactList, ContactsAdapterListener listener) {
         this.context = context;
         this.contactList = contactList;
         this.listener = listener;
@@ -114,10 +115,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull Adapter.MyViewHolder holder, int position) {
-        final EPLTeamModel contact = this.contactList.get(position);
-        holder.tvClubname.setText(contact.getTeamname());
-        holder.tvStadiun.setText(contact.getStadiun());
-        Glide.with(holder.itemView.getContext()).load(contact.getStrTeamBadge()).into(holder.imgimage);
+        final FoodModel contact = this.contactList.get(position);
+        holder.tvfoodname.setText(contact.getFoodname());
+        holder.tvfoodfrom.setText(contact.getFoodfrom());
+        Glide.with(holder.itemView.getContext()).load(contact.getFoodimage()).into(holder.imgimage);
     }
 
 
@@ -132,7 +133,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     }
 
     public interface ContactsAdapterListener {
-        void onContactSelected(EPLTeamModel myteam);
+        void onContactSelected(FoodModel myfood);
     }
 
 }
