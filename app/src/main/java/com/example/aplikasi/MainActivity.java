@@ -16,7 +16,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,13 +23,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements Adapter.ContactsAdapterListener{
-    RecyclerView rvClubName;
-    ArrayList<EPLTeamModel> listDataEPLTeams;
+public class MainActivity extends AppCompatActivity implements Adapter.ContactsAdapterListener {
+    RecyclerView rvfoodset;
+    ArrayList<FoodModel> listDataFood;
     private Adapter adapter;
 
     public void getEPLOnline() {
-        String url = "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=English%20Premier%20League";
+        String url = "https://www.themealdb.com/api/json/v1/1/search.php?f=a";
         AndroidNetworking.get(url)
                 .setTag("test")
                 .setPriority(Priority.LOW)
@@ -38,26 +37,28 @@ public class MainActivity extends AppCompatActivity implements Adapter.ContactsA
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
-//                            Log.d("sukses", "onResponse: "+jsonObject.toString());
-
                         try {
-                            JSONArray jsonArrayEPLTeam = jsonObject.getJSONArray("teams");
-                            for (int i = 0; i < jsonArrayEPLTeam.length() ; i++) {
-                                EPLTeamModel myTeam = new EPLTeamModel();
-                                JSONObject jsonTeam = jsonArrayEPLTeam.getJSONObject(i);
-                                myTeam.setTeamname(jsonTeam.getString("strTeam"));
-                                myTeam.setStadiun(jsonTeam.getString("strStadium"));
-                                myTeam.setTeamdescription(jsonTeam.getString("strDescriptionEN"));
-                                myTeam.setStrTeamBadge(jsonTeam.getString("strTeamBadge"));
-                                listDataEPLTeams.add(myTeam);
-                            }
-                            rvClubName  = findViewById(R.id.recyclerView);
-                            adapter = new Adapter(getApplicationContext(), listDataEPLTeams,MainActivity.this);
-                            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                            rvClubName.setHasFixedSize(true);
-                            rvClubName.setLayoutManager(mLayoutManager);
-                            rvClubName.setAdapter(adapter);
+                            if (jsonObject.has("meals")) {
+                                JSONArray jsonArrayFood = jsonObject.getJSONArray("meals");
+                                for (int i = 0; i < jsonArrayFood.length(); i++) {
+                                    FoodModel myFood = new FoodModel();
+                                    JSONObject jsonfood = jsonArrayFood.getJSONObject(i);
+                                    myFood.setfoodname(jsonfood.getString("strMeal"));
+                                    myFood.setfoodfrom(jsonfood.getString("strArea"));
+                                    myFood.setfooddescription(jsonfood.getString("strInstructions"));
+                                    myFood.setfoodimage(jsonfood.getString("strMealThumb"));
+                                    listDataFood.add(myFood);
+                                }
 
+                                rvfoodset = findViewById(R.id.recyclerView);
+                                adapter = new Adapter(getApplicationContext(), listDataFood, MainActivity.this);
+                                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                                rvfoodset.setHasFixedSize(true);
+                                rvfoodset.setLayoutManager(mLayoutManager);
+                                rvfoodset.setAdapter(adapter);
+                            } else {
+                                Log.e("MainActivity", "No 'meals' key found in JSON response");
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ContactsA
 
                     @Override
                     public void onError(ANError anError) {
-                        Log.d("gagal", "onError: "+anError.toString());
+                        Log.e("MainActivity", "Error: " + anError.getErrorDetail());
                     }
                 });
     }
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.ContactsA
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.menu_logout:
                 Intent intent = new Intent(MainActivity.this, Login.class);
                 startActivity(intent);
@@ -94,16 +95,17 @@ public class MainActivity extends AppCompatActivity implements Adapter.ContactsA
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listDataEPLTeams = new ArrayList<>();
+        listDataFood = new ArrayList<>();
 
         getEPLOnline();
     }
+
     @Override
-    public void onContactSelected(EPLTeamModel myteam) {
+    public void onContactSelected(FoodModel myfood) {
         // move to another page
-        Intent intent = new Intent(this, DetailTeam.class);
-        intent.putExtra("myTeam", myteam);
+        Intent intent = new Intent(this, FoodDetail.class);
+        intent.putExtra("myTeam", myfood);
         startActivity(intent);
     }
-
 }
+

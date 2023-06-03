@@ -39,7 +39,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".DetailTeam"
+            android:name=".FoodDetail"
             android:exported="true">
             <meta-data
                 android:name="android.app.lib_name"

@@ -9,10 +9,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-public class DetailTeam extends AppCompatActivity {
+public class FoodDetail extends AppCompatActivity {
 
-    Intent i;
-    EPLTeamModel eplTeamModel;
     private TextView Name,Desk;
     private ImageView Logo;
 
@@ -20,19 +18,19 @@ public class DetailTeam extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail_team);
+        setContentView(R.layout.activity_detail);
 
         Name = findViewById(R.id.teamname);
         Desk = findViewById(R.id.deskclub);
         Logo = findViewById(R.id.teamlogo);
 
         Intent intent = getIntent();
-        EPLTeamModel eplTeamModel = intent.getParcelableExtra("myTeam");
+        FoodModel foodModel = intent.getParcelableExtra("myTeam");
 
-        Name.setText(eplTeamModel.getTeamname());
-        Desk.setText(eplTeamModel.getTeamdescription());
+        Name.setText(foodModel.getFoodname());
+        Desk.setText(foodModel.getFooddesk());
 
-        Glide.with(this).load(eplTeamModel.getStrTeamBadge()).into(Logo);
+        Glide.with(this).load(foodModel.getFoodimage()).into(Logo);
 
     }
 }
